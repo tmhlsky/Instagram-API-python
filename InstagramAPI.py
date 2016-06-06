@@ -70,16 +70,6 @@ class InstagramAPI:
                     print ("Login success!\n")
                     return True;
 
-    def like(self, mediaId):
-        data = json.dumps({
-        '_uuid'         : self.uuid,
-        '_uid'          : self.username_id,
-        '_csrftoken'    : self.token,
-        'media_id'      : mediaId
-        })
-
-        return self.SendRequest('media/'+ str(mediaId) +'/like/', self.generateSignature(data))
-
     def SendRequest(self, endpoint, post = None, login = False):
         if (not self.isLoggedIn and not login):
             raise Exception("Not logged in!\n")
@@ -383,6 +373,94 @@ class InstagramAPI:
         popularFeed = self.SendRequest('feed/popular/?people_teaser_supported=1&rank_token='+ str(self.rank_token) +'&ranked_content=true&')
         # TODO Instagram.php 1315-1325
         return popularFeed
+
+    def getUserFollowings(self, usernameId, maxid = None):
+        return self.SendRequest('friendships/'+ str(usernameId) +'/following/?max_id='+ str(maxid)
+            +'&ig_sig_key_version='+ self.SIG_KEY_VERSION +'&rank_token='+ self.rank_token)
+
+    def getSelfUsersFollowing(self):
+        return self.getUserFollowings(self.username_id)
+
+    def getUserFollowers(self, usernameId, maxid = None):
+        return self.SendRequest('friendships/'+ str(usernameId) +'/followers/?max_id='+ str(maxid)
+            +'&ig_sig_key_version='+ self.SIG_KEY_VERSION +'&rank_token='+ self.rank_token)
+
+    def getSelfUserFollowers(self):
+        return self.getUserFollowers(self.username_id)
+
+    def like(self, mediaId):
+        data = json.dumps({
+        '_uuid'         : self.uuid,
+        '_uid'          : self.username_id,
+        '_csrftoken'    : self.token,
+        'media_id'      : mediaId
+        })
+        return self.SendRequest('media/'+ str(mediaId) +'/like/', self.generateSignature(data))
+
+    def unlike(self, mediaId):
+        data = json.dumps({
+        '_uuid'         : self.uuid,
+        '_uid'          : self.username_id,
+        '_csrftoken'    : self.token,
+        'media_id'      : mediaId
+        })
+        return self.SendRequest('media/'+ str(mediaId) +'/unlike/', self.generateSignature(data))
+
+    def getMediaComments(self, mediaId):
+        return self.SendRequest('media/'+ mediaId +'/comments/?')
+
+    def setNameAndPhone(self, name = '', phone = ''):
+        data = json.dumps({
+        '_uuid'         : self.uuid,
+        '_uid'          : self.username_id,
+        'first_name'    : name,
+        'phone_number'  : phone,
+        '_csrftoken'    : self.token
+        })
+        return self.SendRequest('accounts/set_phone_and_name/', self.generateSignature(data))
+
+    def getDirectShare(self):
+        return self.SendRequest('direct_share/inbox/?')
+
+    def backup(self):
+        # TODO Instagram.php 1470-1485
+        return False
+
+    def follow(self, userId):
+        data = json.dumps({
+        '_uuid'         : self.uuid,
+        '_uid'          : self.username_id,
+        'user_id'       : userId,
+        '_csrftoken'    : self.token
+        })
+        return self.SendRequest('friendships/create/'+ str(userId) +'/', self.generateSignature(data))
+
+    def unfollow(self, userId):
+        data = json.dumps({
+        '_uuid'         : self.uuid,
+        '_uid'          : self.username_id,
+        'user_id'       : userId,
+        '_csrftoken'    : self.token
+        })
+        return self.SendRequest('friendships/destroy/'+ str(userId) +'/', self.generateSignature(data))
+
+    def block(self, userId):
+        data = json.dumps({
+        '_uuid'         : self.uuid,
+        '_uid'          : self.username_id,
+        'user_id'       : userId,
+        '_csrftoken'    : self.token
+        })
+        return self.SendRequest('friendships/block/'+ str(userId) +'/', self.generateSignature(data))
+
+    def unblock(self, userId):
+        data = json.dumps({
+        '_uuid'         : self.uuid,
+        '_uid'          : self.username_id,
+        'user_id'       : userId,
+        '_csrftoken'    : self.token
+        })
+        return self.SendRequest('friendships/unblock/'+ str(userId) +'/', self.generateSignature(data))
 
 InstagramAPI = InstagramAPI("login", "password")
 InstagramAPI.login() # login
