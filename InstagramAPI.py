@@ -70,11 +70,6 @@ class InstagramAPI:
                     print ("Login success!\n")
                     return True;
 
-    def tagFeed(self, tag):
-        userFeed = self.SendRequest("feed/tag/"+ tag +"/?rank_token=" + self.rank_token + "&ranked_content=true&")
-        # TODO Instagram.php 1000-1015
-        return userFeed
-
     def like(self, mediaId):
         data = json.dumps({
         '_uuid'         : self.uuid,
@@ -83,7 +78,7 @@ class InstagramAPI:
         'media_id'      : mediaId
         })
 
-        return self.SendRequest("media/"+ str(mediaId) +"/like/", self.generateSignature(data))
+        return self.SendRequest('media/'+ str(mediaId) +'/like/', self.generateSignature(data))
 
     def SendRequest(self, endpoint, post = None, login = False):
         if (not self.isLoggedIn and not login):
@@ -191,7 +186,7 @@ class InstagramAPI:
         '_csrftoken'   : self.token,
         'caption_text' : captionText
         })
-        return self.SendRequest("media/"+ str(mediaId) +"/edit_media/", self.generateSignature(data))
+        return self.SendRequest('media/'+ str(mediaId) +'/edit_media/', self.generateSignature(data))
 
     def removeSelftag(self, mediaId):
         data = json.dumps({
@@ -199,7 +194,7 @@ class InstagramAPI:
         '_uid'         : self.username_id,
         '_csrftoken'   : self.token
         })
-        return self.SendRequest("media/"+ str(mediaId) +"/remove/", self.generateSignature(data))
+        return self.SendRequest('media/'+ str(mediaId) +'/remove/', self.generateSignature(data))
 
     def mediaInfo(self, mediaId):
         data = json.dumps({
@@ -208,7 +203,7 @@ class InstagramAPI:
         '_csrftoken'   : self.token,
         'media_id'     : mediaId
         })
-        return self.SendRequest("media/"+ str(mediaId) +"/info/", self.generateSignature(data))
+        return self.SendRequest('media/'+ str(mediaId) +'/info/', self.generateSignature(data))
 
     def deleteMedia(self, mediaId):
         data = json.dumps({
@@ -217,7 +212,7 @@ class InstagramAPI:
         '_csrftoken'   : self.token,
         'media_id'     : mediaId
         })
-        return self.SendRequest("media/"+ str(mediaId) +"/delete/", self.generateSignature(data))
+        return self.SendRequest('media/'+ str(mediaId) +'/delete/', self.generateSignature(data))
 
     def comment(self, mediaId, commentText):
         data = json.dumps({
@@ -226,7 +221,7 @@ class InstagramAPI:
         '_csrftoken'   : self.token,
         'comment_text' : commentText
         })
-        return self.SendRequest("media/"+ str(mediaId) +"/comment/", self.generateSignature(data))
+        return self.SendRequest('media/'+ str(mediaId) +'/comment/', self.generateSignature(data))
 
     def deleteComment(self, mediaId, captionText, commentId):
         data = json.dumps({
@@ -235,7 +230,7 @@ class InstagramAPI:
         '_csrftoken'   : self.token,
         'caption_text' : captionText
         })
-        return self.SendRequest("media/"+ str(mediaId) +"/comment/"+ str(commentId) +"/delete/", self.generateSignature(data))
+        return self.SendRequest('media/'+ str(mediaId) +'/comment/'+ str(commentId) +'/delete/', self.generateSignature(data))
 
     def changeProfilePicture(self, photo):
         # TODO Instagram.php 705-775
@@ -247,7 +242,7 @@ class InstagramAPI:
         '_uid'         : self.username_id,
         '_csrftoken'   : self.token
         })
-        return self.SendRequest("accounts/remove_profile_picture/", self.generateSignature(data))
+        return self.SendRequest('accounts/remove_profile_picture/', self.generateSignature(data))
 
     def setPrivateAccount(self):
         data = json.dumps({
@@ -255,7 +250,7 @@ class InstagramAPI:
         '_uid'         : self.username_id,
         '_csrftoken'   : self.token
         })
-        return self.SendRequest("accounts/set_private/", self.generateSignature(data))
+        return self.SendRequest('accounts/set_private/', self.generateSignature(data))
 
     def setPublicAccount(self):
         data = json.dumps({
@@ -263,7 +258,7 @@ class InstagramAPI:
         '_uid'         : self.username_id,
         '_csrftoken'   : self.token
         })
-        return self.SendRequest("accounts/set_public/", self.generateSignature(data))
+        return self.SendRequest('accounts/set_public/', self.generateSignature(data))
 
     def getProfileData(self):
         data = json.dumps({
@@ -271,7 +266,7 @@ class InstagramAPI:
         '_uid'         : self.username_id,
         '_csrftoken'   : self.token
         })
-        return self.SendRequest("accounts/current_user/?edit=true", self.generateSignature(data))
+        return self.SendRequest('accounts/current_user/?edit=true', self.generateSignature(data))
 
     def editProfile(self, url, phone, first_name, biography, email, gender):
         data = json.dumps({
@@ -286,10 +281,13 @@ class InstagramAPI:
         'email'        : email,
         'gender'       : gender,
         })
-        return self.SendRequest("accounts/edit_profile/", self.generateSignature(data))
+        return self.SendRequest('accounts/edit_profile/', self.generateSignature(data))
 
     def getUsernameInfo(self, usernameId):
-        return self.SendRequest("users/"+ str(usernameId) +"/info/")
+        return self.SendRequest('users/'+ str(usernameId) +'/info/')
+
+    def getSelfUsernameInfo(self):
+        return self.getUsernameInfo(self.username_id)
 
     def getRecentActivity(self):
         activity = self.SendRequest('news/inbox/?')
@@ -307,15 +305,84 @@ class InstagramAPI:
         return inbox
 
     def getUserTags(self, usernameId):
-        tags = self.SendRequest('usertags/'+ str(usernameId) +'/feed/?rank_token='+ self.rank_token +'&ranked_content=true&')
+        tags = self.SendRequest('usertags/'+ str(usernameId) +'/feed/?rank_token='+ str(self.rank_token) +'&ranked_content=true&')
         # TODO Instagram.php 975-985
         return tags
 
     def getSelfUserTags(self):
         return self.getUserTags(self.username_id)
 
-    def getSelfUsernameInfo(self):
-        return self.getUsernameInfo(self.username_id)
+    def tagFeed(self, tag):
+        userFeed = self.SendRequest('feed/tag/'+ str(tag) +'/?rank_token=' + str(self.rank_token) + '&ranked_content=true&')
+        # TODO Instagram.php 1000-1015
+        return userFeed
+
+    def getMediaLikers(self, mediaId):
+        likers = self.SendRequest('media/'+ str(mediaId) +'/likers/?')
+        # TODO Instagram.php 1025-1035
+        return likers
+
+    def getGeoMedia(self, usernameId):
+        locations = self.SendRequest('maps/user/'+ str(usernameId) +'/')
+        # TODO Instagram.php 1050-1060
+        return locations
+
+    def getSelfGeoMedia(self):
+        return self.getGeoMedia(self.username_id)
+
+    def fbUserSearch(self, query):
+        query = self.SendRequest('fbsearch/topsearch/?context=blended&query='+ str(query) +'&rank_token='+ str(self.rank_token))
+        # TODO Instagram.php 1080-1090
+        return query
+
+    def searchUsers(self, query):
+        query = self.SendRequest('users/search/?ig_sig_key_version='+ str(self.SIG_KEY_VERSION)
+                +'&is_typeahead=true&query='+ str(query) +'&rank_token='+ str(self.rank_token))
+        # TODO Instagram.php 1100-1110
+        return query
+
+    def searchUsername(self, usernameName):
+        query = self.SendRequest('users/'+ str(usernameName) +'/usernameinfo/')
+        # TODO Instagram.php 1080-1090
+        return query
+
+    def syncFromAdressBook(self, contacts):
+        return self.SendRequest('address_book/link/?include=extra_display_name,thumbnails', json.dumps(contacts))
+
+    def searchTags(self, query):
+        query = self.SendRequest('tags/search/?is_typeahead=true&q='+ str(query) +'&rank_token='+ str(self.rank_token))
+        # TODO Instagram.php 1160-1170
+        return query
+
+    def getTimeline(self):
+        query = self.SendRequest('feed/timeline/?rank_token='+ str(self.rank_token) +'&ranked_content=true&')
+        # TODO Instagram.php 1180-1190
+        return query
+
+    def getUserFeed(self, usernameId, maxid = None, minTimestamp = None):
+        # TODO Instagram.php 1200-1220
+        return False
+
+    def getSelfUserFeed(self):
+        return self.getUserFeed(self.username_id)
+
+    def getHashtagFeed(self, hashtagString, maxid = None):
+        # TODO Instagram.php 1230-1250
+        return False
+
+    def searchLocation(self, query):
+        locationFeed = self.SendRequest('fbsearch/places/?rank_token='+ str(self.rank_token) +'&query=' + str(query))
+        # TODO Instagram.php 1250-1270
+        return locationFeed
+
+    def getLocationFeed(self, locationId, maxid = None):
+        # TODO Instagram.php 1280-1300
+        return False
+
+    def getPopularFeed(self):
+        popularFeed = self.SendRequest('feed/popular/?people_teaser_supported=1&rank_token='+ str(self.rank_token) +'&ranked_content=true&')
+        # TODO Instagram.php 1315-1325
+        return popularFeed
 
 InstagramAPI = InstagramAPI("login", "password")
 InstagramAPI.login() # login
