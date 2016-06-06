@@ -11,7 +11,7 @@ This is python port of https://github.com/mgp25/Instagram-API, written on PHP. W
 
 1) login;
 
-2) tagFeed;
+2) tagFeed (TODO);
 
 3) like;
 
@@ -31,9 +31,9 @@ This is python port of https://github.com/mgp25/Instagram-API, written on PHP. W
 
 11) deleteMedia;
 
-12) getv2Inbox;
+12) getv2Inbox (TODO);
 
-13) getRecentActivity;
+13) getRecentActivity (TODO);
 
 14) megaphoneLog;
 
@@ -43,7 +43,25 @@ This is python port of https://github.com/mgp25/Instagram-API, written on PHP. W
 
 17) syncFeatures;
 
-18)
+18) removeProfilePicture;
+
+19) setPrivateAccount;
+
+20) setPublicAccount;
+
+21) getProfileData;
+
+22) editProfile;
+
+23) getUsernameInfo;
+
+24) getSelfUsernameInfo;
+
+25) getFollowingRecentActivity (TODO);
+
+26) getUserTags (TODO);
+
+27) getSelfUserTags;
 
 ### TODO:
 

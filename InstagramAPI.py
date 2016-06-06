@@ -57,10 +57,8 @@ class InstagramAPI:
                         'login_attempt_count' : '0'}
 
                 if (self.SendRequest('accounts/login/', self.generateSignature(json.dumps(data)), True)):
-                    print ("Login success!")
                     self.isLoggedIn = True
                     self.username_id = self.LastJson["logged_in_user"]["pk"]
-                    print (self.username_id)
                     self.rank_token = "%s_%s" % (self.username_id, self.uuid)
                     self.token = self.LastResponse.cookies["csrftoken"]
 
@@ -69,7 +67,7 @@ class InstagramAPI:
                     self.timelineFeed()
                     self.getv2Inbox()
                     self.getRecentActivity()
-
+                    print ("Login success!\n")
                     return True;
 
     def tagFeed(self, tag):
@@ -239,19 +237,85 @@ class InstagramAPI:
         })
         return self.SendRequest("media/"+ str(mediaId) +"/comment/"+ str(commentId) +"/delete/", self.generateSignature(data))
 
-    def changeProfilePicture(photo):
+    def changeProfilePicture(self, photo):
         # TODO Instagram.php 705-775
         return False
+
+    def removeProfilePicture(self):
+        data = json.dumps({
+        '_uuid'        : self.uuid,
+        '_uid'         : self.username_id,
+        '_csrftoken'   : self.token
+        })
+        return self.SendRequest("accounts/remove_profile_picture/", self.generateSignature(data))
+
+    def setPrivateAccount(self):
+        data = json.dumps({
+        '_uuid'        : self.uuid,
+        '_uid'         : self.username_id,
+        '_csrftoken'   : self.token
+        })
+        return self.SendRequest("accounts/set_private/", self.generateSignature(data))
+
+    def setPublicAccount(self):
+        data = json.dumps({
+        '_uuid'        : self.uuid,
+        '_uid'         : self.username_id,
+        '_csrftoken'   : self.token
+        })
+        return self.SendRequest("accounts/set_public/", self.generateSignature(data))
+
+    def getProfileData(self):
+        data = json.dumps({
+        '_uuid'        : self.uuid,
+        '_uid'         : self.username_id,
+        '_csrftoken'   : self.token
+        })
+        return self.SendRequest("accounts/current_user/?edit=true", self.generateSignature(data))
+
+    def editProfile(self, url, phone, first_name, biography, email, gender):
+        data = json.dumps({
+        '_uuid'        : self.uuid,
+        '_uid'         : self.username_id,
+        '_csrftoken'   : self.token,
+        'external_url' : url,
+        'phone_number' : phone,
+        'username'     : self.username,
+        'full_name'    : first_name,
+        'biography'    : biography,
+        'email'        : email,
+        'gender'       : gender,
+        })
+        return self.SendRequest("accounts/edit_profile/", self.generateSignature(data))
+
+    def getUsernameInfo(self, usernameId):
+        return self.SendRequest("users/"+ str(usernameId) +"/info/")
+
+    def getRecentActivity(self):
+        activity = self.SendRequest('news/inbox/?')
+        # TODO Instagram.php 911-925
+        return activity
+
+    def getFollowingRecentActivity(self):
+        activity = self.SendRequest('news/?')
+        # TODO Instagram.php 935-945
+        return activity
 
     def getv2Inbox(self):
         inbox = self.SendRequest('direct_v2/inbox/?')
         # TODO Instagram.php 950-960
         return inbox
 
-    def getRecentActivity(self):
-        activity = self.SendRequest('news/inbox/?')
-        # TODO Instagram.php 911-925
-        return activity
+    def getUserTags(self, usernameId):
+        tags = self.SendRequest('usertags/'+ str(usernameId) +'/feed/?rank_token='+ self.rank_token +'&ranked_content=true&')
+        # TODO Instagram.php 975-985
+        return tags
+
+    def getSelfUserTags(self):
+        return self.getUserTags(self.username_id)
+
+    def getSelfUsernameInfo(self):
+        return self.getUsernameInfo(self.username_id)
 
 InstagramAPI = InstagramAPI("login", "password")
 InstagramAPI.login() # login
