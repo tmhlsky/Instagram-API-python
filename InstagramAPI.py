@@ -100,9 +100,9 @@ class InstagramAPI:
                                 'User-Agent' : self.USER_AGENT})
 
         if (post != None): # POST
-            response = self.s.post(self.API_URL + endpoint, data=post, verify=False)
+            response = self.s.post(self.API_URL + endpoint, data=post) # , verify=False
         else: # GET
-            response = self.s.get(self.API_URL + endpoint, verify=False)
+            response = self.s.get(self.API_URL + endpoint) # , verify=False
 
         if response.status_code == 200:
             self.LastResponse = response
@@ -128,7 +128,6 @@ class InstagramAPI:
         volatile_seed = "12345"
         m = hashlib.md5()
         m.update(seed.encode('utf-8') + volatile_seed.encode('utf-8'))
-
         return 'android-' + m.hexdigest()[:16]
 
     def generateSignature(self, data):
@@ -142,7 +141,6 @@ class InstagramAPI:
         '_csrftoken'    : self.token,
         'experiments'   : self.EXPERIMENTS
         })
-
         return self.SendRequest('qe/sync/', self.generateSignature(data))
 
     def autoCompleteUserList(self):
@@ -150,6 +148,100 @@ class InstagramAPI:
 
     def timelineFeed(self):
         return self.SendRequest('feed/timeline/')
+
+    def megaphoneLog(self):
+        return self.SendRequest('megaphone/log/')
+
+    def expose(self):
+        data = json.dumps({
+        '_uuid'        : self.uuid,
+        '_uid'         : self.username_id,
+        'id'           : self.username_id,
+        '_csrftoken'   : self.token,
+        'experiment'   : 'ig_android_profile_contextual_feed'
+        })
+        return self.SendRequest('qe/expose/', self.generateSignature(data))
+
+    def logout(self):
+        logout = self.SendRequest('accounts/logout/')
+        # TODO Instagram.php 180-185
+
+    def uploadPhoto(self, photo, caption = None, upload_id = None):
+        # TODO Instagram.php 200-290
+        return False
+
+    def uploadVideo(self, video, caption = None):
+        # TODO Instagram.php 290-415
+        return False
+
+    def direct_share(self, media_id, recipients, text = None):
+        # TODO Instagram.php 420-490
+        return False
+
+    def configureVideo(upload_id, video, caption = ''):
+        # TODO Instagram.php 490-530
+        return False
+
+    def configure(upload_id, photo, caption = ''):
+        # TODO Instagram.php 530-570
+        return False
+
+    def editMedia(self, mediaId, captionText = ''):
+        data = json.dumps({
+        '_uuid'        : self.uuid,
+        '_uid'         : self.username_id,
+        '_csrftoken'   : self.token,
+        'caption_text' : captionText
+        })
+        return self.SendRequest("media/"+ str(mediaId) +"/edit_media/", self.generateSignature(data))
+
+    def removeSelftag(self, mediaId):
+        data = json.dumps({
+        '_uuid'        : self.uuid,
+        '_uid'         : self.username_id,
+        '_csrftoken'   : self.token
+        })
+        return self.SendRequest("media/"+ str(mediaId) +"/remove/", self.generateSignature(data))
+
+    def mediaInfo(self, mediaId):
+        data = json.dumps({
+        '_uuid'        : self.uuid,
+        '_uid'         : self.username_id,
+        '_csrftoken'   : self.token,
+        'media_id'     : mediaId
+        })
+        return self.SendRequest("media/"+ str(mediaId) +"/info/", self.generateSignature(data))
+
+    def deleteMedia(self, mediaId):
+        data = json.dumps({
+        '_uuid'        : self.uuid,
+        '_uid'         : self.username_id,
+        '_csrftoken'   : self.token,
+        'media_id'     : mediaId
+        })
+        return self.SendRequest("media/"+ str(mediaId) +"/delete/", self.generateSignature(data))
+
+    def comment(self, mediaId, commentText):
+        data = json.dumps({
+        '_uuid'        : self.uuid,
+        '_uid'         : self.username_id,
+        '_csrftoken'   : self.token,
+        'comment_text' : commentText
+        })
+        return self.SendRequest("media/"+ str(mediaId) +"/comment/", self.generateSignature(data))
+
+    def deleteComment(self, mediaId, captionText, commentId):
+        data = json.dumps({
+        '_uuid'        : self.uuid,
+        '_uid'         : self.username_id,
+        '_csrftoken'   : self.token,
+        'caption_text' : captionText
+        })
+        return self.SendRequest("media/"+ str(mediaId) +"/comment/"+ str(commentId) +"/delete/", self.generateSignature(data))
+
+    def changeProfilePicture(photo):
+        # TODO Instagram.php 705-775
+        return False
 
     def getv2Inbox(self):
         inbox = self.SendRequest('direct_v2/inbox/?')
