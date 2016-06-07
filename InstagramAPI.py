@@ -303,14 +303,14 @@ class InstagramAPI:
         # TODO Instagram.php 1180-1190
         return query
 
-    def getUserFeed(self, usernameId, maxid = None, minTimestamp = None):
+    def getUserFeed(self, usernameId, maxid = '', minTimestamp = None):
         # TODO Instagram.php 1200-1220
         return False
 
     def getSelfUserFeed(self):
         return self.getUserFeed(self.username_id)
 
-    def getHashtagFeed(self, hashtagString, maxid = None):
+    def getHashtagFeed(self, hashtagString, maxid = ''):
         # TODO Instagram.php 1230-1250
         return False
 
@@ -319,7 +319,7 @@ class InstagramAPI:
         # TODO Instagram.php 1250-1270
         return locationFeed
 
-    def getLocationFeed(self, locationId, maxid = None):
+    def getLocationFeed(self, locationId, maxid = ''):
         # TODO Instagram.php 1280-1300
         return False
 
@@ -328,14 +328,14 @@ class InstagramAPI:
         # TODO Instagram.php 1315-1325
         return popularFeed
 
-    def getUserFollowings(self, usernameId, maxid = None):
+    def getUserFollowings(self, usernameId, maxid = ''):
         return self.SendRequest('friendships/'+ str(usernameId) +'/following/?max_id='+ str(maxid)
             +'&ig_sig_key_version='+ self.SIG_KEY_VERSION +'&rank_token='+ self.rank_token)
 
     def getSelfUsersFollowing(self):
         return self.getUserFollowings(self.username_id)
 
-    def getUserFollowers(self, usernameId, maxid = None):
+    def getUserFollowers(self, usernameId, maxid = ''):
         return self.SendRequest('friendships/'+ str(usernameId) +'/followers/?max_id='+ str(maxid)
             +'&ig_sig_key_version='+ self.SIG_KEY_VERSION +'&rank_token='+ self.rank_token)
 
@@ -484,3 +484,4 @@ InstagramAPI.login() # login
 InstagramAPI.tagFeed("cat") # get media list by tag #cat
 media_id = InstagramAPI.LastJson["ranked_items"][0]["pk"] # media id of first media
 InstagramAPI.like(media_id) # like first media
+InstagramAPI.getUserFollowers(InstagramAPI.LastJson["ranked_items"][0]["user"]["pk"]) # get first media owner followers
