@@ -1,7 +1,7 @@
 # Instagram-API-python
-<img src="https://img.shields.io/badge/coverege-65%25-yellow.svg">
-<img src="https://img.shields.io/badge/version-b%200.01-orange.svg">
-<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=UM6L3YJENAQZ6&lc=US&item_name=InstaBot%2epy&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted" title="Support project"><img src="https://img.shields.io/badge/Support%20project-paypal-brightgreen.svg"></a>
+<img src="https://img.shields.io/badge/Coverege-65%25-yellow.svg">
+<img src="https://img.shields.io/badge/Version-b%200.01-orange.svg">
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=7BMM6JGE73322&lc=US&item_name=GitHub%20donation&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted" title="Support project"><img src="https://img.shields.io/badge/Support%20project-paypal-brightgreen.svg"></a>
 
 Unofficial instagram API, give you access to ALL instagram features (like, follow, upload photo and video and etc)! Write on python.
 
@@ -139,4 +139,4 @@ This is python port of https://github.com/mgp25/Instagram-API, written on PHP. W
 
 11) buildBody;
 
-Original contains more than 1500 rows, I will be glad if you could help me! The hardest part is done - it left to rewrite a bunch of features that simply. Thank you!
+If you want to help - write what you want to do. In other cases, you can do the exact same work with another assistant or me.
