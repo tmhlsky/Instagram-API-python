@@ -70,52 +70,6 @@ class InstagramAPI:
                     print ("Login success!\n")
                     return True;
 
-    def SendRequest(self, endpoint, post = None, login = False):
-        if (not self.isLoggedIn and not login):
-            raise Exception("Not logged in!\n")
-            return;
-
-        self.s.headers.update ({'Connection' : 'close',
-                                'Accept' : '*/*',
-                                'Content-type' : 'application/x-www-form-urlencoded; charset=UTF-8',
-                                'Cookie2' : '$Version=1',
-                                'Accept-Language' : 'en-US',
-                                'User-Agent' : self.USER_AGENT})
-
-        if (post != None): # POST
-            response = self.s.post(self.API_URL + endpoint, data=post) # , verify=False
-        else: # GET
-            response = self.s.get(self.API_URL + endpoint) # , verify=False
-
-        if response.status_code == 200:
-            self.LastResponse = response
-            self.LastJson = json.loads(response.text)
-            return True
-        else:
-            print ("Request return " + str(response.status_code) + " error!")
-            return False
-
-    def generateUUID(self, type):
-        uuid = '%04x%04x-%04x-%04x-%04x-%04x%04x%04x' % (random.randint(0, 0xffff),
-               random.randint(0, 0xffff), random.randint(0, 0xffff),
-               random.randint(0, 0x0fff) | 0x4000,
-               random.randint(0, 0x3fff) | 0x8000,
-               random.randint(0, 0xffff), random.randint(0, 0xffff),
-               random.randint(0, 0xffff))
-        if (type):
-            return uuid
-        else:
-            return uuid.replace('-', '')
-
-    def generateDeviceId(self, seed):
-        volatile_seed = "12345"
-        m = hashlib.md5()
-        m.update(seed.encode('utf-8') + volatile_seed.encode('utf-8'))
-        return 'android-' + m.hexdigest()[:16]
-
-    def generateSignature(self, data):
-        return 'ig_sig_key_version=' + self.SIG_KEY_VERSION + '&signed_body=' + hmac.new(self.IG_SIG_KEY.encode('utf-8'), data.encode('utf-8'), hashlib.sha256).hexdigest() + '.' + urllib.parse.quote(data)
-
     def syncFeatures(self):
         data = json.dumps({
         '_uuid'         : self.uuid,
@@ -461,6 +415,69 @@ class InstagramAPI:
         '_csrftoken'    : self.token
         })
         return self.SendRequest('friendships/unblock/'+ str(userId) +'/', self.generateSignature(data))
+
+    def userFriendship(self, userId):
+        data = json.dumps({
+        '_uuid'         : self.uuid,
+        '_uid'          : self.username_id,
+        'user_id'       : userId,
+        '_csrftoken'    : self.token
+        })
+        return self.SendRequest('friendships/show/'+ str(userId) +'/', self.generateSignature(data))
+
+    def getLikedMedia(self):
+        return self.SendRequest('feed/liked/?')
+
+    def generateSignature(self, data):
+        return 'ig_sig_key_version=' + self.SIG_KEY_VERSION + '&signed_body=' + hmac.new(self.IG_SIG_KEY.encode('utf-8'), data.encode('utf-8'), hashlib.sha256).hexdigest() + '.' + urllib.parse.quote(data)
+
+    def generateDeviceId(self, seed):
+        volatile_seed = "12345"
+        m = hashlib.md5()
+        m.update(seed.encode('utf-8') + volatile_seed.encode('utf-8'))
+        return 'android-' + m.hexdigest()[:16]
+
+    def generateUUID(self, type):
+        uuid = '%04x%04x-%04x-%04x-%04x-%04x%04x%04x' % (random.randint(0, 0xffff),
+               random.randint(0, 0xffff), random.randint(0, 0xffff),
+               random.randint(0, 0x0fff) | 0x4000,
+               random.randint(0, 0x3fff) | 0x8000,
+               random.randint(0, 0xffff), random.randint(0, 0xffff),
+               random.randint(0, 0xffff))
+        if (type):
+            return uuid
+        else:
+            return uuid.replace('-', '')
+
+    def buildBody(bodies, boundary):
+        # TODO Instagram.php 1620-1645
+        return False
+
+    def SendRequest(self, endpoint, post = None, login = False):
+        if (not self.isLoggedIn and not login):
+            raise Exception("Not logged in!\n")
+            return;
+
+        self.s.headers.update ({'Connection' : 'close',
+                                'Accept' : '*/*',
+                                'Content-type' : 'application/x-www-form-urlencoded; charset=UTF-8',
+                                'Cookie2' : '$Version=1',
+                                'Accept-Language' : 'en-US',
+                                'User-Agent' : self.USER_AGENT})
+
+        if (post != None): # POST
+            response = self.s.post(self.API_URL + endpoint, data=post) # , verify=False
+        else: # GET
+            response = self.s.get(self.API_URL + endpoint) # , verify=False
+
+        if response.status_code == 200:
+            self.LastResponse = response
+            self.LastJson = json.loads(response.text)
+            return True
+        else:
+            print ("Request return " + str(response.status_code) + " error!")
+            return False
+
 
 InstagramAPI = InstagramAPI("login", "password")
 InstagramAPI.login() # login
