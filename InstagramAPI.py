@@ -479,9 +479,9 @@ class InstagramAPI:
             return False
 
 
-InstagramAPI = InstagramAPI("login", "password")
+InstagramAPI = InstagramAPI("gvozdika_store", "u8t0t4a0")
 InstagramAPI.login() # login
 InstagramAPI.tagFeed("cat") # get media list by tag #cat
-media_id = InstagramAPI.LastJson["ranked_items"][0]["pk"] # media id of first media
-InstagramAPI.like(media_id) # like first media
-InstagramAPI.getUserFollowers(InstagramAPI.LastJson["ranked_items"][0]["user"]["pk"]) # get first media owner followers
+media_id = InstagramAPI.LastJson # media id of first media
+InstagramAPI.like(media_id["ranked_items"][0]["pk"]) # like first media
+InstagramAPI.getUserFollowers(media_id["ranked_items"][0]["user"]["pk"]) # get first media owner followers
