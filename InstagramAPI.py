@@ -479,7 +479,7 @@ class InstagramAPI:
             return False
 
 
-InstagramAPI = InstagramAPI("gvozdika_store", "u8t0t4a0")
+InstagramAPI = InstagramAPI("login", "password")
 InstagramAPI.login() # login
 InstagramAPI.tagFeed("cat") # get media list by tag #cat
 media_id = InstagramAPI.LastJson # media id of first media
